@@ -44,8 +44,6 @@ If the problem is the conversation direction rather than file contents, use pi's
 4. Apply the narrowest recovery operation or use `/tree` for context-only recovery.
 5. Verify the result with `git status`, a focused diff, and relevant tests.
 
-## Notes
+## Recovery Mechanisms
 
-- Existing `.pi-keel/snapshots/` data is not a recovery source. The security extension does not read, restore, or delete legacy snapshot data.
-- Any existing legacy data should be handled explicitly by the user, outside the security extension.
-- Editor history, version control, and pi's session tree are the supported recovery mechanisms.
+Editor history, version control, and pi's session tree are the supported recovery mechanisms. pi-keel does not create or manage snapshot data.
