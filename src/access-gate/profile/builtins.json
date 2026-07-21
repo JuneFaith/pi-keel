@@ -48,8 +48,7 @@
       "pathPolicy": {
         "rules": [
           { "path": "project/docs/**", "write": "allow" },
-          { "path": "project/CONTEXT.md", "write": "allow" },
-          { "path": "project/.pi-keel/**", "write": "allow" }
+          { "path": "project/CONTEXT.md", "write": "allow" }
         ]
       }
     },
