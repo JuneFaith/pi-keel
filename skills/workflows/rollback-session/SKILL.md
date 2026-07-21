@@ -43,7 +43,3 @@ If the problem is the conversation direction rather than file contents, use pi's
 3. Obtain explicit approval before destructive version-control operations.
 4. Apply the narrowest recovery operation or use `/tree` for context-only recovery.
 5. Verify the result with `git status`, a focused diff, and relevant tests.
-
-## Recovery Mechanisms
-
-Editor history, version control, and pi's session tree are the supported recovery mechanisms. pi-keel does not create or manage snapshot data.
