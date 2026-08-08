@@ -110,7 +110,8 @@ export function extractPositionalArgs(
       }
       // POSIX 组合簇 + 尾随带值短选项：-rt d（-t 分离值）、-rref.txt（-r 附着值）、-pm 755
       // 从前往后扫描单字符短选项，首个命中 valueOptions 的即带值选项；其前字符视为 flag 簇（不验证），
-      // 值 = token 内剩余（附着）或下一 token（分离）。未命中则整体跳过（纯 flag 簇/未知，现状）。
+      // 值 = token 内剩余（附着）或下一 token（分离）；无下一 token（缺值，POSIX 错误输入）时静默不消费。
+      // 未命中则整体跳过（纯 flag 簇/未知，现状）。
       if (!val.startsWith("--")) {
         for (let k = 1; k < val.length; k++) {
           const opt = `-${val[k]}`;
@@ -120,8 +121,6 @@ export function extractPositionalArgs(
             } else if (i + 1 < args.length) {
               consumed.push({ option: opt, value: args[i + 1]!.value ?? "" });
               i++;
-            } else {
-              consumed.push({ option: opt, value: "" });
             }
             break;
           }
