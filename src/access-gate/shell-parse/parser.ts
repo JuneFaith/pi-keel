@@ -18,7 +18,9 @@ const ALL_DIGITS = /^\d+$/;
 // ─── 重定向 kind 推断 ───
 
 function redirectKind(op: string, fd: number | null, target: string | null): RedirectionKind {
-  if (op === "<" || op === "<>") return "stdin";
+  if (op === "<") return "stdin";
+  // <> 是读写打开：只建模读会把写意图漏给 PathPolicy（cmd <> file 可写 file）
+  if (op === "<>") return fd === 2 ? "stderr" : "stdout";
   // <&N / >&N：fd 复制；<&- / >&-：fd 关闭
   if (op === "<&" || op === ">&") {
     if (target === "-") return "fdClose";
