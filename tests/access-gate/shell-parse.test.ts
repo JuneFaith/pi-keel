@@ -584,18 +584,18 @@ test("parser: newline continuation keeps && and pipeline semantics", () => {
   assert.equal(pipe.program.commands[1]!.operatorBefore, "|");
 });
 
-test("parser: <> open-readwrite redirect is modeled as readwrite", () => {
+test("parser: <> open-readwrite redirect is modeled on the write side", () => {
   const { program } = parse(lex("cat <> f.txt").tokens);
   const cmd = program.commands[0]!;
   assert.equal(cmd.redirections.length, 1);
-  assert.equal(cmd.redirections[0]!.kind, "readwrite");
+  assert.equal(cmd.redirections[0]!.kind, "stdout");
   assert.equal(cmd.redirections[0]!.target?.value, "f.txt");
 });
 
-test("parser: 2<> open-readwrite redirect keeps fd 2 as readwrite", () => {
+test("parser: 2<> open-readwrite redirect is modeled as stderr", () => {
   const { program } = parse(lex("cat 2<> f.txt").tokens);
   const cmd = program.commands[0]!;
   assert.equal(cmd.redirections.length, 1);
-  assert.equal(cmd.redirections[0]!.kind, "readwrite");
+  assert.equal(cmd.redirections[0]!.kind, "stderr");
   assert.equal(cmd.redirections[0]!.fd, 2);
 });

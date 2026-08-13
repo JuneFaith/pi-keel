@@ -25,8 +25,7 @@ export type RedirectionKind =
   | "fdDuplicate"
   | "fdClose"
   | "heredoc"
-  | "hereString"
-  | "readwrite";
+  | "hereString";
 
 export interface ShellRedirectionNode {
   kind: RedirectionKind;

@@ -61,10 +61,12 @@
 - [D-040 命令语义分类与统一选项引擎](docs/decisions.md#d-040-命令语义分类与统一选项引擎)
 - [D-041 集中配置与可选工具建模（config.yaml + optionalAdapters）](docs/decisions.md#d-041-集中配置与可选工具建模configyaml--optionaladapters)
 - [D-042 gate 物理分层 + 目录 index 统一 + interpreter-names 命名](docs/decisions.md#d-042-gate-物理分层--目录-index-统一--interpreter-names-命名)
+- [D-043 访问控制职责边界与配置一致性原则（自定义 profile 不保证 + 复杂形态可拒绝 + write⇒read）](docs/decisions.md#d-043-访问控制职责边界与配置一致性原则自定义-profile-不保证--复杂形态可拒绝--write⇒read)
 
 ## Negative Space
 
 - 不提供 OS-level sandbox、容器、VM、seccomp、Landlock、network namespace 或独立 network policy 轴。
+- 自定义 profile 的矛盾配置（如 write 宽于 read、read=deny + write=allow 同路径）不在保证范围：write⇒read 是配置一致性预期（D-043），gate 不校验自定义配置一致性，也不为矛盾组合的行为追责。
 - 仅保证支持 Linux 平台（以 Arch Linux 的 GNU 工具链为基准）；不提供 Windows / macOS / BSD 支持，不建模其路径语义与选项方言；其他 Linux 发行版的工具链差异不在保证范围。
 - 不承诺 pathname check 与实际文件操作之间的 TOCTOU 消除：gate 是纯决策层，不执行文件操作，与执行方之间没有 fd 传递通道；消除需 pi 宿主提供 fd/OS 级原子机制，结构性超出 pi-keel 能力。
 - 不拦截 `user_bash`、`shellCommandPrefix`、Bash `spawnHook`、tool override、custom tool backend、未知 Direct tool surface 或其他 Extension 的直接操作；用户安装的其他 Extension 可直接调用 Node fs/child_process。
