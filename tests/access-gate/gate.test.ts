@@ -390,8 +390,10 @@ test("multi-line inspect chain stays allowed command-by-command", async () => {
   assert.deepEqual(result, { kind: "allow" });
 });
 
-test("<> open-readwrite redirect gates the write side", async () => {
-  // `cat <> out.txt` 读写打开：写意图必须受 PathPolicy 约束（project write=ask → 审批 → Deny → block）
+test("<> open-readwrite redirect is rejected with split guidance", async () => {
+  // `<>` 是 O_RDWR 读写打开，单 kind 无法精确建模双面语义（只建模 read 漏写侧、
+  // 只建模 write 漏读侧）→ 编译期拒绝（heredoc 同类），AI 拆解为 < + > 或 Direct 工具。
   const result = await evaluateBash("cat <> out.txt", profile(), "Deny");
   assert.equal(result.kind, "block");
+  assert.equal(result.code, "unsupported-redirection");
 });

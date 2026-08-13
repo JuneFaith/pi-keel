@@ -39,9 +39,11 @@ function redirectionOperation(
       const operation = redirection.kind === "stdin" ? "read" : "write";
       return pathOperation(operation, redirection.target.value, state, "redirection", "exact", redirection.span);
     }
-    // heredoc/hereString 内容不在命令文本中建模 → 显式拒绝；新增 kind 在此强制编译错误
+    // heredoc/hereString 内容不在命令文本中建模 → 显式拒绝；readwrite（<>）的
+    // O_RDWR 双面语义无法单 kind 精确建模 → 同样拒绝，引导拆解；新增 kind 在此强制编译错误
     case "heredoc":
     case "hereString":
+    case "readwrite":
       return reject("unsupported-redirection", redirection.kind, redirection.span);
   }
 }

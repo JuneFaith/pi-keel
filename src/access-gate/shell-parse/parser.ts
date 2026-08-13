@@ -19,8 +19,10 @@ const ALL_DIGITS = /^\d+$/;
 
 function redirectKind(op: string, fd: number | null, target: string | null): RedirectionKind {
   if (op === "<") return "stdin";
-  // <> 是读写打开：只建模读会把写意图漏给 PathPolicy（cmd <> file 可写 file）
-  if (op === "<>") return fd === 2 ? "stderr" : "stdout";
+  // <> 是 O_RDWR 读写打开：单 kind 无法精确建模双面语义（只建模 read 漏写侧、
+  // 只建模 write 漏读侧）→ 独立 readwrite kind 识别身份，shell-compiler 拒绝并
+  // 引导拆解（与 heredoc/hereString 同类）；未来支持时把 reject 换成 read+write 双 intent
+  if (op === "<>") return "readwrite";
   // <&N / >&N：fd 复制；<&- / >&-：fd 关闭
   if (op === "<&" || op === ">&") {
     if (target === "-") return "fdClose";
@@ -72,7 +74,7 @@ function tryParseRedirect(
 
   const kind = redirectKind(op, fd, target?.value ?? null);
   if (fd === null) {
-    if (kind === "stdin" || kind === "heredoc" || kind === "hereString") fd = 0;
+    if (kind === "stdin" || kind === "heredoc" || kind === "hereString" || kind === "readwrite") fd = 0;
     else if (kind === "stderr" || kind === "stderrAppend") fd = 2;
     else fd = 1;
   }
